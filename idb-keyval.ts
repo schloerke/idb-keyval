@@ -15,8 +15,8 @@ export class Store {
   constructor(dbName = 'keyval-store', readonly storeName = 'keyval') {
     this._dbp = promiseStore(indexedDB.open(dbName), storeName)
       .then(db => {
+        db.onversionchange = () => db.close();
         if (db.objectStoreNames.contains(storeName)) return db;
-        db.close();
         return promiseStore(indexedDB.open(dbName, db.version + 1), storeName);
       });;
   }
